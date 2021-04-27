@@ -15,6 +15,7 @@ const randombytes = require('randombytes')
 const speedometer = require('speedometer')
 const queueMicrotask = require('queue-microtask')
 
+const utp = require('./lib/utp')
 const ConnPool = require('./lib/conn-pool') // browser exclude
 const Torrent = require('./lib/torrent')
 const VERSION = require('./package.json').version
@@ -74,7 +75,7 @@ class WebTorrent extends EventEmitter {
     this.lsd = opts.lsd !== false
     this.torrents = []
     this.maxConns = Number(opts.maxConns) || 55
-    this.utp = opts.utp === true
+    this.utp = WebTorrent.UTP_SUPPORT && opts.utp === true
 
     this._debug(
       'new webtorrent (peerId %s, nodeId %s, port %s)',
@@ -429,6 +430,7 @@ class WebTorrent extends EventEmitter {
 }
 
 WebTorrent.WEBRTC_SUPPORT = Peer.WEBRTC_SUPPORT
+WebTorrent.UTP_SUPPORT = Object.keys(utp).length > 0
 WebTorrent.VERSION = VERSION
 
 /**
